@@ -5,6 +5,7 @@ from pygame.constants import (
 import os
 import random
 
+#Dies ist meine letzte funktionierende Datei. Habe mich an der Logik von Minesweeper versucht alle meine versuche haben aber in nichts geendet und dies ist meine letzte version die Funktioniert. 
 
 class Settings(object):    
     def __init__(self): 
@@ -21,12 +22,13 @@ class Settings(object):
     def get_dim(self):
         return (self.width, self.height)
 
+#Mauszeiger
 class Pointer(pygame.sprite.Sprite):          
     def __init__(self, settings):
         pygame.sprite.Sprite.__init__(self)
         self.settings = settings
         self.image = pygame.image.load(os.path.join(self.settings.images_path, "pointer.png")).convert_alpha()
-        self.image = pygame.transform.scale(self.image, (10, 10))
+        self.image = pygame.transform.scale(self.image, (50, 40))
         self.rect = self.image.get_rect()
         self.directionx = 0
         self.directiony = 0
@@ -34,7 +36,7 @@ class Pointer(pygame.sprite.Sprite):
     def update(self):
         cx = self.rect.centerx
         cy = self.rect.centery
-        self.image = pygame.transform.scale(self.image, (10, 10))
+        self.image = pygame.transform.scale(self.image, (50, 40))
         self.rect = self.image.get_rect()
         self.rect.centerx = cx
         self.rect.centery = cy
@@ -50,8 +52,9 @@ class Game(object):
         self.bombs = 25
         self.done = False
         self.bricks = {}
+        pygame.mouse.set_visible(False)
         self.all_pointers = pygame.sprite.GroupSingle()
-        self.all_pointers_add(self.pointer)
+        self.all_pointers.add(self.pointer)
         self.pointer = pygame.sprite.Group()
         self.place_bricks()
         self.place_base()
@@ -71,6 +74,7 @@ class Game(object):
             self.update()
             self.draw()
 
+#Plazieren der grundlagen mit der base-map
     def place_base(self):
         map = []
         firstline = True
@@ -84,6 +88,7 @@ class Game(object):
                     map.append(line.split((" ")))
         self.base = map
 
+#Plazieren der normallen teile
     def place_bricks(self):
         self.bricks.clear()
         base = self.pygame.image.load(os.path.join(self.settings.images_path, "leer_voll.jpg")).convert()
@@ -91,11 +96,13 @@ class Game(object):
         self.bricks[1] = base
         self.bricks[2] = bomb
 
+# Basis wird gezeichnet
     def draw_base(self):
         for i in range(self.rows):
             for y in range(self.columns):
                 self.screen.blit(self.bricks[1],(y*self.settings.brick_width,i*self.settings.brick_height))
 
+#Plazieren der Mienen
     def placeBombs(self):
         self.bombsY = []
         self.bombsX = []
@@ -113,6 +120,7 @@ class Game(object):
                 bombplace -= 1
         print(self.bombsX, self.bombsY)
 
+#Plazieren der Mienen
     def place_bombs(self):
         x = 0
         y = 0
@@ -132,7 +140,7 @@ class Game(object):
         self.all_pointers.update()
 
 
-
+#Versuch einen Restart einzubauen
     #def restart():
       #  game()
       #  restart = input("Would you like to play again? Please enter '1' for YES or '2' for NO: ")
