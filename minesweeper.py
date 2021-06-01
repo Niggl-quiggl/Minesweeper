@@ -29,7 +29,7 @@ class Pointer(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.settings = settings
         self.image = pygame.image.load(os.path.join(self.settings.images_path, "pointer.png")).convert_alpha()
-        self.image = pygame.transform.scale(self.image, (50, 40))
+        self.image = pygame.transform.scale(self.image, (50, 25))
         self.rect = self.image.get_rect()
         self.directionx = 0
         self.directiony = 0
@@ -37,7 +37,7 @@ class Pointer(pygame.sprite.Sprite):
     def update(self):
         cx = self.rect.centerx
         cy = self.rect.centery
-        self.image = pygame.transform.scale(self.image, (50, 40))
+        self.image = pygame.transform.scale(self.image, (50, 35))
         self.rect = self.image.get_rect()
         self.rect.centerx = cx
         self.rect.centery = cy
