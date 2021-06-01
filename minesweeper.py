@@ -7,6 +7,7 @@ import random
 
 #Dies ist meine letzte funktionierende Datei. Habe mich an der Logik von Minesweeper versucht alle meine versuche haben aber in nichts geendet und dies ist meine letzte version die Funktioniert. 
 
+#Hier werden die Allgemeinen infos des Programmes abgespeichert um sie später einfach abzurufen
 class Settings(object):    
     def __init__(self): 
         self.brick_width = 16
@@ -41,6 +42,8 @@ class Pointer(pygame.sprite.Sprite):
         self.rect.centerx = cx
         self.rect.centery = cy
 
+    
+#Die Hauptfunktionen des Spieles
 class Game(object): 
     def __init__(self, pygame, settings):
         self.pygame = pygame
@@ -61,6 +64,7 @@ class Game(object):
         self.placeBombs()
         self.place_bombs()
 
+# Abspielen des Programmes und Tasteneingaben
     def run(self):  
         while not self.done:                            
             self.clock.tick(self.settings.fps)
@@ -96,7 +100,7 @@ class Game(object):
         self.bricks[1] = base
         self.bricks[2] = bomb
 
-# Basis wird gezeichnet
+#Zeichnen der Basis
     def draw_base(self):
         for i in range(self.rows):
             for y in range(self.columns):
@@ -130,12 +134,14 @@ class Game(object):
             for j in range (len(self.bombsY)):               
                 self.screen.blit(self.bricks[2], (self.bombsX[x - 1]*self.settings.brick_width, self.bombsY[y -1]*self.settings.brick_height))
 
+#Zeichnet die basis, die bomben und den Mauszeiger
     def draw(self):
         self.draw_base()
         self.place_bombs()
         self.all_pointers.draw(self.screen)
         self.pygame.display.flip()
 
+#updated die position des Mauszeigers
     def update(self):
         self.all_pointers.update()
 
