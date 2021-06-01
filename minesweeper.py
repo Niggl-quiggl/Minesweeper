@@ -15,11 +15,29 @@ class Settings(object):
         self.fps = 60       
         self.title = "Minesweeper" 
         self.file_path = os.path.dirname(os.path.abspath(__file__))
-        self.image_path = os.path.join(self.file_path, "images")
+        self.images_path = os.path.join(self.file_path, "images")
         self.map_path = os.path.join(self.file_path, "map")
 
     def get_dim(self):
         return (self.width, self.height)
+
+class Pointer(pygame.sprite.Sprite):          
+    def __init__(self, settings):
+        pygame.sprite.Sprite.__init__(self)
+        self.settings = settings
+        self.image = pygame.image.load(os.path.join(self.settings.images_path, "pointer.png")).convert_alpha()
+        self.image = pygame.transform.scale(self.image, (10, 10))
+        self.rect = self.image.get_rect()
+        self.directionx = 0
+        self.directiony = 0
+
+    def update(self):
+        cx = self.rect.centerx
+        cy = self.rect.centery
+        self.image = pygame.transform.scale(self.image, (10, 10))
+        self.rect = self.image.get_rect()
+        self.rect.centerx = cx
+        self.rect.centery = cy
 
 class Game(object): 
     def __init__(self, pygame, settings):
@@ -28,9 +46,13 @@ class Game(object):
         self.screen = pygame.display.set_mode(settings.get_dim())
         self.pygame.display.set_caption(self.settings.title)
         self.clock = pygame.time.Clock()
+        self.pointer = Pointer(settings)
         self.bombs = 25
         self.done = False
         self.bricks = {}
+        self.all_pointers = pygame.sprite.GroupSingle()
+        self.all_pointers_add(self.pointer)
+        self.pointer = pygame.sprite.Group()
         self.place_bricks()
         self.place_base()
         self.placeBombs()
@@ -38,13 +60,15 @@ class Game(object):
 
     def run(self):  
         while not self.done:                            
-            self.clock.tick(self.settings.fps)          
+            self.clock.tick(self.settings.fps)
+            self.all_pointers.sprite.rect.centerx, self.all_pointers.sprite.rect.centery = pygame.mouse.get_pos()         
             for event in self.pygame.event.get():       
                 if event.type == QUIT:                 
                     self.done = True 
                 elif event.type == KEYDOWN:
                     if event.key == K_q:
                         self.done = True   
+            self.update()
             self.draw()
 
     def place_base(self):
@@ -62,8 +86,8 @@ class Game(object):
 
     def place_bricks(self):
         self.bricks.clear()
-        base = self.pygame.image.load(os.path.join(self.settings.image_path, "leer_voll.jpg")).convert()
-        bomb = self.pygame.image.load(os.path.join(self.settings.image_path, "miene.jpg")).convert()
+        base = self.pygame.image.load(os.path.join(self.settings.images_path, "leer_voll.jpg")).convert()
+        bomb = self.pygame.image.load(os.path.join(self.settings.images_path, "miene.jpg")).convert()
         self.bricks[1] = base
         self.bricks[2] = bomb
 
@@ -101,7 +125,11 @@ class Game(object):
     def draw(self):
         self.draw_base()
         self.place_bombs()
+        self.all_pointers.draw(self.screen)
         self.pygame.display.flip()
+
+    def update(self):
+        self.all_pointers.update()
 
 
 
